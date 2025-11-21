@@ -10,17 +10,17 @@
 # number = int(input("Введите число: "))
 # #j - переменная которая ссылается на всю строку (ее значения)
 # #i - индекс всей строки (номер индекса в строке)
-# for i in range(1,number+1):
-#     for j in range(1,number+1):
-#         print(i*j, end="")
+# for i in range(1, number + 1):
+#     for j in range(1, number + 1):
+#         print(i * j, end="\t")
 #     print()
 
 
-# n = int(input("Введите число:"))
+# n = int(input("Введите число: "))
 # max_len = len(str(n*n))# макс длинна строки
-# for s in range(1, n+1): # строка
-#     for m in range(1, n+1): # столбцы
-#         val = str(s*m) #
+# for s in range(1, n + 1): # строка
+#     for m in range(1, n + 1): # столбцы
+#         val = str(s * m) #
 #         space = " " * (max_len - len(val))# получаем интервал при помощи разницы и равняем по правому краю
 #         # space = " " * (max_len(7) - len(val))
 #         print(space + val, end=" ")
@@ -34,9 +34,9 @@
 # Введите число: 5
 # n = int(input("Введите число: "))
 
-# for i in range(1,n+1):
-#     for j in range(1,i+1):
-#         print(j, end="")
+# for i in range(1, n + 1):
+#     for j in range(1, i + 1):
+#         print(j, end=" ")
 #     print()
 
 
@@ -46,9 +46,9 @@
 # сохраняя только первые их вхождения.
 # Пример вывода:
 # Введите строку: Python programming
-# Результат: Python prgami
+# Результат: Python prgami_______
 
-# text = "Python programming"#input("Введите строку: ")
+# text = input("Введите строку: ")
 # result = ""
 
 # for char in text:
