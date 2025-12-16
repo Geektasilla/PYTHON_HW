@@ -7,8 +7,8 @@
 # Обработанный список: ['hello', 'world', 'simple']
 
 # VAR 1
-#text_list = ["Hello", "Python Programming", "World", "Advanced Topics", "Simple"]
-#text_list = input().split(", ") # Hello, Python Programming, World, Advanced Topics, Simple
+# text_list = ["Hello", "Python Programming", "World", "Advanced Topics", "Simple"]
+# text_list = input().split(", ") # Hello, Python Programming, World, Advanced Topics, Simple
 # for i in reversed(range(len(text_list))):
 #     if " " in text_list[i]: # если содержит пробел  TRUE
 #         text_list.pop(i) # удаляем
@@ -18,13 +18,34 @@
 # print(f'Обработанный список:', text_list)
 
 # VAR 2
-# text_list = ["Hello", "Python Programming", "World", "Advanced Topics", "Simple"]
+#text_list = ["Hello", "Python Programming", "World", "Advanced Topics", "Simple"]
 # text_list = input().split(", ")# Hello, Python Programming, World, Advanced Topics, Simple
+# print(text_list)
 # new_list = []
 # for i in text_list:
 #     if " " not in i:
 #         new_list.append(i.lower())
 # print(f'Обработанный список:', new_list)
+
+#________________________________
+# text_list = ["Hello", "Python Programming", "World", "Advanced Topics", "Simple"]
+# filtered_list = []
+# # Итерация по каждой строке
+# for text in text_list:
+#
+# # Проверка на наличие пробела:
+# # Если пробел НЕ найден (т.е., строка состоит из одного слова)
+# # text.find(' ') возвращает -1, если пробел не найден.
+#     if text.find(' ') == -1:
+#     # Или более читаемо: if ' ' not in text:
+#     # Преобразование в нижний регистр
+#     single_word = text.lower()
+#
+# # Добавление в новый список
+#     filtered_list.append(single_word)
+# print(f"Обработанный список: {filtered_list}")
+
+#________________________________
 
 
 # 2. Обновление цен товаров
@@ -41,27 +62,23 @@
 # Keyboard            75.00$           62.25$
 # Monitor            200.00$          166.00$
 
-# VAR 1 - с исправлениями
+# # VAR 1 - с исправлениями
 # products = [["Laptop", 1200], ["Mouse", 25], ["Keyboard", 75], ["Monitor", 200]]
 # discount = int(input("Введите скидку (в процентах): " ))
 # print(f'{"Products":<15}{"Old_price":>16}{"New_price":>16}')
 #
-# for product, price in products:
+#
+# for product in products:
+#     name = product[0]
+#     price = product[1]
 #     new_price = price * (1 - discount / 100)
-#     print(f'{product:<15}'f'{price:>15.2f}$'f'{new_price:>15.2f}$')
+#     rounded_price = round(new_price)
+#     product.append(rounded_price)
+#
+#     print(f'{name:<15}'f'{price:>15.2f}$'f'{new_price:>15.2f}$')
+# print(products)
 
-# VAR 2 для автоматизации
-# products = [["Laptop", 1200], ["Mouse", 25], ["Keyboard", 75], ["Monitor", 200]]
-# discount = int(input("Введите скидку (в процентах): " ))
-#
-# product_max = max(len(products) for product, price in products) + 10
-# price_max = max(len(str(price)) for _, price in products) + 10
-# new_price_max = max(len(str(new_price)) for new_price in products) + 10
-# print(f'{"Products":<{product_max}} {"Price":>{price_max}} {"New_price":>{new_price_max}}')
-#
-# for product, price in products:
-#     new_price = price * (1 - discount / 100)
-#     print(f'{product:<{product_max}}'f'{price:>{price_max}.2f}$'f'{new_price:>{new_price_max}.2f}$')
+
 
 
 

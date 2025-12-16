@@ -13,10 +13,11 @@
 # Var  c возможностями множеств
 # set1 = {1, 2, 3, 4}
 # set2 = {2, 3}
-# print(set1 >= set2)
-# print(set(set1) >= set(set2))
+#
 # print(set1.issuperset(set2))
 # print(False if set2.difference(set1) else True)
+# print(set1 >= set2)
+# print(set(set1) >= set(set2))
 #________________
 # VAR 2, цикл for
 # set1 = {1, 2, 3, 4}
@@ -46,20 +47,17 @@
 # Подмножество: True
 # Разница: {2, 3, 6}
 
-# set1 = {2, 3, 4, 5, 6}
-# set2 = {4, 5}
-
+# # VAR 1
 # set1 = {2, 3, 4, 5, 6}
 # set2 = {8, 7}
 # check = True if set2.issubset(set1) or set1.issuperset(set2) else False
-#
 # diff = {}
 # if set2.issubset(set1):
 #     diff = set1 - set2
 # elif set1.issubset(set2):
 #     diff = set2 - set1
-# elif set1 not in set2 or set2 not in set1:
-#     diff = set1 | set2
+# elif set1 not in set2:
+#     diff = set1 ^ set2
 # print(f'Подмножество: {check}\nРазница:{diff}')
 
 # тесты:
