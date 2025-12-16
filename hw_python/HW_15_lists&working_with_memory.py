@@ -62,21 +62,21 @@
 # Keyboard            75.00$           62.25$
 # Monitor            200.00$          166.00$
 
-# # VAR 1 - с исправлениями
-# products = [["Laptop", 1200], ["Mouse", 25], ["Keyboard", 75], ["Monitor", 200]]
-# discount = int(input("Введите скидку (в процентах): " ))
-# print(f'{"Products":<15}{"Old_price":>16}{"New_price":>16}')
-#
-#
-# for product in products:
-#     name = product[0]
-#     price = product[1]
-#     new_price = price * (1 - discount / 100)
-#     rounded_price = round(new_price)
-#     product.append(rounded_price)
-#
-#     print(f'{name:<15}'f'{price:>15.2f}$'f'{new_price:>15.2f}$')
-# print(products)
+# VAR 1 - с исправлениями
+products = [["Laptop", 1200], ["Mouse", 25], ["Keyboard", 75], ["Monitor", 200]]
+discount = int(input("Введите скидку (в процентах): " ))
+print(f'{"Products":<15}{"Old_price":>16}{"New_price":>16}')
+
+
+for product in products:
+    name = product[0]
+    price = product[1]
+    new_price = price * (1 - discount / 100)
+    rounded_price = round(new_price)
+    product.append(rounded_price)
+
+    print(f'{name:<15}'f'{price:>15.2f}$'f'{new_price:>15.2f}$')
+#print(products) проверка изначального списка
 
 
 
