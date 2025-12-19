@@ -29,16 +29,16 @@ FROM purchase_order_details;
 -- Сделайте то же самое с помощью GROUP BY
 
 SELECT DISTINCT
-	purchase_order_id,
-	SUM(unit_cost * quantity) over (PARTITION BY purchase_order_id) AS sum_cost
+	product_id,
+	SUM(unit_cost * quantity) over (PARTITION BY product_id) AS sum_cost
 FROM purchase_order_details;
 
 #---------GROUP BY-------------
 SELECT 
-	purchase_order_id,
-	SUM(quantity * unit_cost) AS sum_cost
+	product_id,
+	ROUND(SUM(quantity * unit_cost),2) AS sum_cost
 FROM purchase_order_details
-GROUP BY purchase_order_id;
+GROUP BY product_id;
 
 -- 4. Посчитайте количество заказов по дате получения и posted_to_inventory 
 -- Если оно превышает 1 то выведите '>1' в противном случае '=1'
