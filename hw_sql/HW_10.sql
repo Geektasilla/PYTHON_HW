@@ -42,4 +42,4 @@ WHERE rank_num <= 10;
 
 
 
-FROM northwind.order_details;
+
