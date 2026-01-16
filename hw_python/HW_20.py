@@ -84,20 +84,8 @@
 #         return [num for num in args if num % 2 == 0]
 #     elif filter_type == "odd":
 #         return [num for num in args if num % 2 != 0]
-#     elif filter_type == "prime":
-#         return [num for num in args if is_prime(num)] # is_prime(num) создам отдельно для  этой функции
 #     else:
 #         return "Некорректный фильтр"
-# #создаю доп функцию для проверки простого числа
-# def is_prime(num):
-#     if num <= 1:
-#         return False
-#     # применяю принцип пробного деления, если я найду  у этого числа хоть один делитель отличающийся от самого числа  значит число непростое
-#     for i in range(2, int(num ** 0.5) + 1):
-#         if num % i == 0:
-#             return False
-#     return True
-#
 #
 # print(filter_numbers("even", 1, 2, 3, 4, 5, 6))
 # print(filter_numbers("odd", 10, 15, 20, 25))
