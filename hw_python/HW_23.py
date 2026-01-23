@@ -9,11 +9,16 @@
 #  42 | hello | [1, 2, 3] | {'a': 1, 'b': 2}
 
 # from typing import Any
-#
+# 
 # def conversion_to_string(data: list[Any]) -> str:
+#     """
+#     Преобразует список любых данных в строку, объединяя элементы через " | ".
+#     :param data: Список данных для объединения.
+#     :return: Строковое представление данных, объединенных через " | ".
+#     """
 #     result = " | ".join(map(str, data))
 #     return result
-#
+# 
 # data = [42, "hello", [1, 2, 3], {"a": 1, "b": 2}]
 # data1 = [-0.7, "hello", [], {0: 1, "b": 2}]
 # data2 = [True, " ", [True, 2, 3], {"v": 1, "=": 2}]
@@ -36,6 +41,11 @@
 # Пример вывода: Итоговый балл: 156
 
 # def addition_of_all_numbers(dict_data: list[dict[str, list[int]]]) -> int:
+#     """
+#     Вычисляет сумму всех чисел в вложенных словарях.
+#     :param dict_data: список словарей, где каждый словарь содержит имя пользователя и список баллов.
+#     :return: Общая сумма всех чисел в вложенных словарях.
+#     """
 #     return sum(sum(d["scores"]) for d in dict_data)
 #
 # data = [
