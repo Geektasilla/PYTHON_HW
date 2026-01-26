@@ -1,5 +1,4 @@
 # Python Fundamentals 2025: Домашнее задание 25
-from typing import Union
 
 # 1. Деление без ошибок
 # Напишите функцию, которая выполняет деление двух чисел, введенных пользователем,
@@ -8,7 +7,6 @@ from typing import Union
 # Введите делимое: 345
 # Введите делитель: 5a
 # Ошибка: Введено некорректное число.
-from typing import Union
 
 # def division_of_two_numbers(divident: float, divider: float) -> float:
 #     """
