@@ -77,6 +77,27 @@
 # yogurt
 
 ##SOLUTION:
+# VARIANT 1
+# import itertools
+# def combine_products(*args):
+#     """Combines multiple lists of products into a single generator of lowercase names.
+#         :param args: A variable number of lists containing product names.
+#         :return: A generator that yields each product name in lowercase.
+#         """
+#     merged = itertools.chain.from_iterable(args)
+#     return (product.lower() for product in merged)
+#
+# fruits = ["Apple", "Banana", "Orange"]
+# vegetables = ["Carrot", "Tomato", "Cucumber"]
+# dairy = ["Milk", "Cheese", "Yogurt"]
+#
+# combined_products = combine_products(fruits, vegetables, dairy)
+#
+# for product in combined_products:
+#     print(product)
+
+
+# VARIANT 2
 # def combine_products(*args):
 #     """
 #     A function that takes several lists of product names and returns a generator
@@ -119,6 +140,26 @@
 #
 
 ##SOLUTION:
+# VARIANT 1
+# import itertools
+# def generate_cloth_combinations(clothes, colors, sizes):
+#     """
+#     A function that takes lists of clothing types, colors, and sizes, and then generates all possible combinations
+#     :param args: Several lists, where each list of clothing types, colors, and sizes, as strings.
+#     :return: generates all possible combinations in the format “Clothing - Color - Size”.
+#     """
+#     return ("-".join(comb) for comb in itertools.product(clothes, colors, sizes))
+#
+# clothes = ["T-shirt", "Jeans", "Jacket"]
+# colors = ["Red", "Blue", "Black"]
+# sizes = ["S", "M", "L"]
+#
+# result_combinations = generate_cloth_combinations(clothes, colors, sizes)
+# for combinations in result_combinations:
+#     print(combinations)
+
+
+# VARIANT 2 (with generators)
 # def generate_combinations(clothes, colors, sizes):
 #     """
 #     A function that takes lists of clothing types, colors, and sizes, and then generates all possible combinations
