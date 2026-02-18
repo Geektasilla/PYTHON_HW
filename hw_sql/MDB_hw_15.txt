@@ -1,0 +1,102 @@
+Databases 2025: Домашнее задание 15
+
+1. Коллекция imdb :
+Используя оператор $size , найдите фильмы, написанные 3 сценаристами (writers) и снятые 2 режиссерами (directors)
+
+{
+  filter: {
+    type: 'movie',
+    directors: {
+      $size: 2
+    },
+    writers: {
+      $size: 3
+    }
+  }
+}
+---
+Этот же запрос, но для shell оболочки
+db.imdb.find({type: 'movie', directors: {$size: 2}, writers: {$size: 3}})
+______________________________________________________________________
+2. Коллекция bookings:
+Найдите адрес нахождения автомобиля с vin WME4530421Y135045 по самой последней дате (и времени) final_date
+
+{
+  filter: {
+    vin: 'WME4530421Y135045'
+  },
+  sort: {
+    final_date: -1
+  },
+  project: {
+    final_address: 1,
+    _id: 0
+  },
+  limit: 1
+}
+___
+Этот же запрос, но для shell оболочки
+db.bookings.find({vin: 'WME4530421Y135045'}, {final_date: -1}})
+______________________________________________________________________________________________
+3.Коллекция bookings:
+подсчитайте, у скольких автомобилей при окончании аренды закончилось топливо (final_fuel)
+
+{
+  filter: {
+    final_fuel: {
+      $eq: 0
+    }
+  },
+  project: {
+    final_fuel: 1,
+    _id: 0
+  }
+}
+___
+Этот же запрос, но для shell оболочки
+db.bookings.countDocuments({final_fuel: {$eq: 0}})
+
+_____________________________________________
+4.Коллекция bookings:
+найдите номерной знак и vin номер авто, с самым большим километражом (distance)
+{
+  sort: {
+    distance: -1
+  },
+  project: {
+    distance: 1,
+    vin: 1,
+    plate: 1,
+    _id: 0
+  },
+  limit: 1
+}
+___
+Этот же запрос, но для shell оболочки
+db.bookings.find({}, {distance: -1, vin: 1, plate: 1, _id: 0}).sort({distance: -1}).limit(1)
+________________________________________________
+5.Коллекция imdb.
+Найдите фильм с участием "Brad Pitt" с самым высоким рейтингом (imdb.rating)
+
+{
+  filter: {
+    cast: 'Brad Pitt',
+    'imdb.rating': {
+      $type: 'number'
+    }
+  },
+  sort: {
+    'imdb.rating': -1
+  },
+  project: {
+    'imdb.rating': 1,
+    cast: 1,
+    title: 1,
+    _id: 0
+  },
+  limit: 1
+}
+
+___
+Этот же запрос, но для shel оболочки
+db.imdb.find({cast: 'Brad Pitt', 'imdb.rating': {$type: 'number'}}, {'imdb.rating': 1, cast: 1, title: 1, _id: 0}).sort({'imdb.rating': -1}).limit(1)
