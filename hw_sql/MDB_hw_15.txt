@@ -54,6 +54,7 @@ ________________________________________________________________________________
 }
 ___
 Этот же запрос, но для shell оболочки
+db.bookings.find({final_fuel: {$eq: 0}}).projection({final_fuel: 1,_id: 0}).count()
 db.bookings.countDocuments({final_fuel: {$eq: 0}})
 
 _____________________________________________
@@ -75,9 +76,34 @@ ___
 Этот же запрос, но для shell оболочки
 db.bookings.find({}, {distance: -1, vin: 1, plate: 1, _id: 0}).sort({distance: -1}).limit(1)
 ________________________________________________
-5.Коллекция imdb.
+5.Коллекция imdb. ПЕРЕДЕЛАТЬ без $type
 Найдите фильм с участием "Brad Pitt" с самым высоким рейтингом (imdb.rating)
+VAR1
+{
+  filter: {
+    cast: 'Brad Pitt',
+    'imdb.rating': {
+      $ne: ''
+    }
+  },
+  sort: {
+    'imdb.rating': -1
+  },
+  project: {
+    'imdb.rating': 1,
+    cast: 1,
+    title: 1,
+    _id: 0
+  },
+  limit: 1
+}
 
+___
+Этот же запрос, но для shel оболочки
+db.imdb.find({cast: "Brad Pitt", "imdb.rating": { $ne: "" }}).projection({ "imdb.rating": 1, cast: 1, title: 1, _id: 0 }).sort({ "imdb.rating": -1 }).limit(1)
+
+
+VAR2 (с $type)
 {
   filter: {
     cast: 'Brad Pitt',
