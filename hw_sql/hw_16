@@ -1,0 +1,411 @@
+Databases 2025: Домашнее задание 16
+
+1.Найдите средний возраст из коллекции ich.US_Adult_Income
+SOLUTION:
+
+Use ich
+VAR 1
+db["US_Adult_Income"].aggregate([
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        avg_age: {
+          $avg: "$age"
+        }
+      }
+  }
+])
+
+VAR 2 (с округлением)
+db["US_Adult_Income"].aggregate([
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        avg_age: {
+          $avg: "$age"
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0,
+        rounded_avg_age: {
+          $round: ["$avg_age", 0]
+        }
+      }
+  }
+])
+___________________________________
+2.Поменяв подключение к базе данных, создать коллекцию orders_NAME
+(для уникальности - добавим ваше имя в название) со свойствами id, customer, product, amount, city,
+используя следующие данные:
+1 Olga Apple 15.55 Berlin
+2 Anna Apple 10.05 Madrid
+3 Olga Kiwi 9.6 Berlin
+4 Anton Apple 20 Roma
+5 Olga Banana 8 Madrid
+6 Petr Orange 18.3 Paris
+
+SOLUTION:
+use ich_edit
+db.createCollection("orders_BViktoriia")
+db.orders_BViktoriia.insertMany([
+{ id: 1, customer: "Olga", product: "Apple", amount: 15.55, city: "Berlin"},
+{ id: 2, customer: "Anna", product: "Apple", amount: 10.05, city: "Madrid"},
+{ id: 3, customer: "Olga", product: "Kiwi", amount: 9.6, city: "Berlin"},
+{ id: 4, customer: "Anton", product: "Apple", amount: 20, city: "Roma"},
+{ id: 5, customer: "Olga", product: "Banana", amount: 8, city: "Madrid"},
+{ id: 6, customer: "Petr", product: "Orange", amount: 18.3, city: "Paris"}
+])
+____________________________________________
+3.Найти сколько всего было совершено покупок
+SOLUTION:
+VAR 1
+db.orders_BViktoriia.countDocuments()
+
+Var 2
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "total_purchases"
+  }
+])
+
+VAR 3
+db.orders_BViktoriia.aggregate([
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        total_amount: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0
+      }
+  }
+])
+
+____________________________________________
+4.Найти сколько всего раз были куплены яблоки
+VAR 1
+db.orders_BViktoriia.find({product: "Apple"}).count()
+VAR 2
+db.orders_BViktoriia.countDocuments({product: "Apple"})
+VAR 3
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        product: "Apple"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        total_apple: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0
+      }
+  }
+])
+
+__________________________________________________
+5.Вывести идентификаторы трех самые дорогих покупок
+VAR 1
+db.orders_BViktoriia.aggregate([
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        amount: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      3
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        id: 1,
+        _id: 0
+      }
+  }
+]
+)
+
+______________________________________________________
+6.Найти сколько всего покупок было совершено в Берлине
+Var1
+db.orders_BViktoriia.countDocuments({city: "Berlin"})
+
+Var2
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        city: "Berlin"
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "total_buing_in_Berlin"
+  }
+])
+
+Var3
+db.orders_BViktoriia.aggregate([
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        city: "Berlin"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        total_buing_in_Berlin: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0
+      }
+  }
+])
+__________________________________________________________
+7.Найти количество покупок яблок в городах Берлин и Мадрид
+Var1
+db.orders_BViktoriia.countDocuments({city: {$in: ["Berlin", "Madrid"]}, product: "Apple"})
+
+Var2
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        city: {
+          $in: ["Berlin", "Madrid"]
+        },
+        product: "Apple"
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "sum_apple_bought_in_Berlin"
+  }
+])
+
+Var3
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        city: {
+          $in: ["Berlin", "Madrid"]
+        },
+        product: "Apple"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        sum_apple_bought_in_Berlin: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0
+      }
+  }
+])
+_________________________________________________
+8.Найти сколько было потрачено каждым покупателем
+(подсказка: используем $group и total: {$sum: '$amount'} )
+
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: "$customer",
+        total_spend: {
+          $sum: "$amount"
+        }
+      }
+  }
+])
+
+_______________________________________________
+9.Найти в каких городах совершала покупки Ольга
+(подсказка: используем $match customer: 'Olga' и $group _id: '$city')
+
+Var 1
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        customer: "Olga"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: "$city"
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        Olga_Shopping_Cities: "$_id",
+        _id: 0
+      }
+  }
+])
+
+Var 2 (так тоже находит, но без красивой подписи)
+db.orders_BViktoriia.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        customer: "Olga"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: "$city"
+      }
+  }
+])
+
+
+
