@@ -1,0 +1,153 @@
+Databases 2025: Домашнее задание 17
+1.Тестовая коллекция в mongo atlas  sample_mflix.theaters
+Найти все кинотеатры в Калифорнии и посчитать их количество
+Var1
+db.sample_mflix.theaters.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "location.address.state": "CA"
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        total_theaterId: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 0
+      }
+  }
+])
+
+
+Var 2
+db.sample_mflix.theaters.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "location.address.state": "CA"
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "total_theaterId"
+  }
+])
+____________________________________________________________________
+2.Тестовая коллекция в mongo atlas  sample_airbnb.listingsAndReviews
+Найти недвижимость с самым большим количеством спален (bedrooms) и напишите ее название
+db.sample_airbnb.listingsAndReviews.aggregate(
+[
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        bedrooms: 1,
+        name: 1,
+        _id: 0
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        bedrooms: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  }
+])
+______________________________________________________________________
+3.Тестовая коллекция в mongo atlas  sample_airbnb.listingsAndReviews
+Найти недвижимость с самым высоким рейтингом  review_scores_rating
+при минимальном количестве отзывов 50 (number_of_reviews) и напишите ее название
+db.sample_airbnb.listingsAndReviews.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        number_of_reviews: {
+          $gte: 50
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        property_type: 1,
+        name: 1,
+        number_of_reviews: 1,
+        "review_scores.review_scores_rating": 1,
+        _id: 0
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        "review_scores.review_scores_rating": -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        name: 1
+      }
+  }
+])
