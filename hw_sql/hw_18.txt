@@ -1,0 +1,194 @@
+Databases 2025: Домашнее задание 18
+
+Из коллекции sample_airbnb.listingsAndReviews
+найдите среднюю цену за сутки проживания на Гавайских островах.
+Островов несколько, поэтому либо используем
+{'address.location': {$geoWithin: { $centerSphere ….
+Либо перечисляем все возможные острова в поле market
+Подсказка - нам понадобится 2 этапа агрегации : $match и $group
+
+use sample_airbnb
+const a = db.listingsAndReviews
+a.aggregate([
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "address.location": {
+          $geoWithin: {
+            $centerSphere: [
+              [
+                -156.99349809394488,
+                21.104999649809045
+              ],
+              0.05632864191948
+            ]
+          }
+        }
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        evg_price: {
+          $avg: "$price"
+        }
+      }
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        evg_price: {
+          $round: ["$evg_price"]
+        },
+        _id: 0
+      }
+  }
+])
+
+_____________________________________________
+2. Подсчитайте в коллекции sample_mflix.movies,
+сколько фильмов имеют imdb рейтинг выше 8 и
+выходили в период с 2015 до 2023 года (используем year)
+
+
+use sample_mflix
+const sm = db.movies
+
+Var1
+Сначала считаю сколько фильмов имеют imdb рейтинг выше 8 и
+выходили в период с 2015 до 2023 года (используем year)?
+sm.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "imdb.rating": {
+          $gt: 8
+        },
+        year: {
+          $gte: 2015,
+          $lte: 2023
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "total_movies"
+  }
+])
+
+Какой из них имеет самый высокий рейтинг?
+sm.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "imdb.rating": {
+          $gt: 8
+        },
+        year: {
+          $gte: 2015,
+          $lte: 2023
+        }
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        "imdb.rating": -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        "imdb.rating": 1,
+        title: 1,
+        _id: 0
+      }
+  }
+])
+
+
+___________________________________________________________________________
+Var2 (нашла еще такую команду $first, мы ее не проходили, но я попробовала)
+sm.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        "imdb.rating": {
+          $gt: 8
+        },
+        year: {
+          $gte: 2015,
+          $lte: 2023
+        }
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        "imdb.rating": -1
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        total_movies: {
+          $sum: 1
+        },
+        max_rating_movies: {
+          $first: "$title"
+        },
+        highest_rating: {
+          $first: "$imdb.rating"
+        }
+      }
+  }
+])
