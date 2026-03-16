@@ -41,7 +41,6 @@
 # ...
 
 # import pymysql
-# from pytz import country_names
 #
 # config = {
 #     'host': 'ich-db.edu.itcareerhub.de',
