@@ -1,0 +1,281 @@
+Databases 2025: Домашнее задание 19
+use ich.Spotify_Youtube
+const su = db.ich.Spotify_Youtube
+
+Из базы данных ich работаем с коллекцией ich.Spotify_Youtube:
+1.Найдите трек с наивысшими показателями  Danceability и Energy.
+Var 1 (если поотдельности)
+// Трек с наивысшим показателем Danceability
+su.aggregate([
+  {
+    $sort: { Danceability: -1 }
+  },
+  {
+    $limit: 1
+  },
+  {
+    $project: {
+      Track: 1,
+      Danceability: 1,
+      Energy: 1,
+      _id: 0
+    }
+  }
+])
+
+// Трек с наивысшим показателем Energy
+su.aggregate([
+  {
+    $sort: { Energy: -1 }
+  },
+  {
+    $limit: 1
+  },
+  {
+    $project: {
+      Track: 1,
+      Danceability: 1,
+      Energy: 1,
+      _id: 0
+    }
+  }
+])
+Var 2 (если вывести вместе в одном запросе)
+1.Найдите трек с наивысшими показателями  Danceability и Energy.
+Сделайть все в одном запросе. Сохранив при этом наивысшие показатели каждого показателя.
+su.aggregate([
+  {
+    $sort: { Danceability: -1, Energy: -1 }
+  },
+  {
+    $group: {
+      _id: null,
+      maxDanceabilityTrack: { $first: "$Track" },
+      maxDanceability: { $first: "$Danceability" },
+      maxEnergy: { $max: "$Energy" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      maxDanceabilityTrack: 1,
+      maxDanceability: 1,
+      maxEnergy: 1
+    }
+  }
+])
+________________________________________________________________
+2.У какого трека (но не compilation) самая большая длительность?
+su.aggregate(
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        Album_type: {
+          $ne: "compilation"
+        }
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        Duration_ms: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        Track: 1,
+        Duration_ms: 1,
+        _id: 0
+      }
+  }
+])
+
+________________________________________________________
+3.В каком одном альбоме самое большее количество треков?
+su.aggregate(
+[
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: "$Album",
+        max_treks: {
+          $sum: 1
+        }
+      }
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        max_treks: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        Album: "$_id",
+        max_treks: 1,
+        _id: 0
+      }
+  }
+])
+
+____________________________________________________________________________________________________________
+4.Сколько просмотров видео на youtube у трека с самым высоким количеством прослушиваний на spotify (Stream)?
+su.aggregate(
+[
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        Stream: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      1
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        Views: 1,
+        Track: 1,
+        _id: 0
+      }
+  }
+])
+
+_________________________________________________________________
+Из базы данных ich работаем с коллекцией ich.Spotify_Youtube:
+5.Экспортируйте 20 самых популярных (прослушивания или просмотры)
+треков по версиям youtube и spotify и
+импортируйте в базу ich_edit их с именами top20youtube и top20spotify,
+и добавьте им свои имена для уникальности.
+
+use ich.Spotify_Youtube
+const su = db.ich.Spotify_Youtube
+su.aggregate(
+[
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        Views: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      20
+  },
+  {
+    $merge:
+      /**
+       * into: The target collection.
+       * on: Fields to  identify.
+       * let: Defined variables.
+       * whenMatched: Action for matching docs.
+       * whenNotMatched: Action for non-matching docs.
+       */
+      {
+        into: {
+          db: "ich_edit",
+          coll: "BVik_top20youtube"
+        },
+        on: "_id",
+        whenMatched: "merge",
+        whenNotMatched: "insert"
+      }
+  }
+])
+
+_________________________________
+Выборка и импорт для top20spotify
+su.aggregate(
+[
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        Stream: -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      20
+  },
+  {
+    $merge:
+      /**
+       * into: The target collection.
+       * on: Fields to  identify.
+       * let: Defined variables.
+       * whenMatched: Action for matching docs.
+       * whenNotMatched: Action for non-matching docs.
+       */
+      {
+        into: {
+          db: "ich_edit",
+          coll: "BVik_top20spotify"
+        },
+        on: "_id",
+        whenMatched: "merge",
+        whenNotMatched: "insert"
+      }
+  }
+])
+______________________________________________________________
