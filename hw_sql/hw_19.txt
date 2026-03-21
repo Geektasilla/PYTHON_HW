@@ -4,64 +4,30 @@ const su = db.ich.Spotify_Youtube
 
 Из базы данных ich работаем с коллекцией ich.Spotify_Youtube:
 1.Найдите трек с наивысшими показателями  Danceability и Energy.
-Var 1 (если поотдельности)
-// Трек с наивысшим показателем Danceability
-su.aggregate([
-  {
-    $sort: { Danceability: -1 }
-  },
-  {
-    $limit: 1
-  },
+su.aggregate(
+[
   {
     $project: {
       Track: 1,
       Danceability: 1,
       Energy: 1,
-      _id: 0
+      result_avg: {
+        $round: [
+          {
+            $avg: ["$Danceability", "$Energy"]
+          },
+          2
+        ]
+      }
     }
-  }
-])
-
-// Трек с наивысшим показателем Energy
-su.aggregate([
+  },
   {
-    $sort: { Energy: -1 }
+    $sort: {
+      result: -1
+    }
   },
   {
     $limit: 1
-  },
-  {
-    $project: {
-      Track: 1,
-      Danceability: 1,
-      Energy: 1,
-      _id: 0
-    }
-  }
-])
-Var 2 (если вывести вместе в одном запросе)
-1.Найдите трек с наивысшими показателями  Danceability и Energy.
-Сделайть все в одном запросе. Сохранив при этом наивысшие показатели каждого показателя.
-su.aggregate([
-  {
-    $sort: { Danceability: -1, Energy: -1 }
-  },
-  {
-    $group: {
-      _id: null,
-      maxDanceabilityTrack: { $first: "$Track" },
-      maxDanceability: { $first: "$Danceability" },
-      maxEnergy: { $max: "$Energy" }
-    }
-  },
-  {
-    $project: {
-      _id: 0,
-      maxDanceabilityTrack: 1,
-      maxDanceability: 1,
-      maxEnergy: 1
-    }
   }
 ])
 ________________________________________________________________
