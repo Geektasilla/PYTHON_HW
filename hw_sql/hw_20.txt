@@ -1,0 +1,114 @@
+-- Databases 2025: Домашнее задание 20
+-- MySQL:
+-- Работаем с базой данных sakila.
+
+-- 1. Вывести названия фильмов с расшифровкой рейтинга для каждого.
+-- Рейтинги описаны здесь.
+-- В таблице film хранятся годы рейтингов.
+-- Нужно воспользоваться оператором case чтобы определить для каждого кода условие,
+-- по которому будет выводится его развернутое описание (1 предложение).
+USE sakila;
+
+SELECT
+    f.title AS movie_title,
+    f.rating,
+    CASE f.rating
+        WHEN 'G'     THEN 'General Audiences: All ages admitted without restrictions.'
+        WHEN 'PG'    THEN 'Parental Guidance Suggested: Some material may not be suitable for children.'
+        WHEN 'PG-13' THEN 'Parents Strongly Cautioned: Some material may be inappropriate for children under 13.'
+        WHEN 'R'     THEN 'Restricted: Under 17 requires accompanying parent or adult guardian.'
+        WHEN 'NC-17' THEN 'Adults Only: No one 17 and under admitted under any circumstances.'
+        ELSE 'Rating classification is currently unavailable.'
+    END AS audience_guideline
+FROM film AS f;
+_______________________________________________________________________________
+-- 2. Выведите количество фильмов в каждой категории рейтинга. Используем group by.
+SELECT
+    rating,
+    COUNT(*) AS films_category_count
+FROM film
+GROUP BY rating;
+_______________________________________________________________________________
+-- 3. Используя оконные функции и partition by, выведите список названий фильмов,
+-- рейтинг и количество фильмов в каждом рейтинге.
+-- Объясните, чем отличаются результаты предыдущего запроса и запроса в этой задаче.
+
+SELECT
+    title,
+    rating,
+    COUNT(*) OVER (PARTITION BY rating) AS films_count_in_rating
+FROM film;
+________________________________________________________________________________
+-- 4. Изучите таблицы payment и customer.
+-- Выведите список всех платежей с указанием имени и фамилии каждого заказчика, датой платежа и суммой.
+SELECT
+    c.first_name,
+    c.last_name,
+    pt.payment_date,
+    pt.amount
+FROM payment pt
+JOIN customer c
+ON pt.customer_id = c.customer_id;
+______________________________________________________________________________________________________________
+-- 5. Поменяйте предыдущий запрос так, чтобы дата выводилась в формате “число, название месяца, год” (без времени).
+SELECT
+    c.first_name,
+    c.last_name,
+    DATE_FORMAT(pt.payment_date, '%e %M %Y') AS new_format_payment_date,
+    pt.amount
+FROM payment pt
+JOIN customer c ON pt.customer_id = c.customer_id;
+______________________________________________________________________________________________________________
+MongoDB:
+
+Работаем с коллекцией sample_data.restaurants, подключение:
+mongodb://ich1:password@3.67.41.21:27017/?readPreference=primary&ssl=false&authMechanism=DEFAULT&authSource=ich
+
+6. Найти рестораны на 'Staten Island' в названии которых есть слово pizza (Pizza и PIZZA тоже считаются)
+
+db.restaurants.find({
+  borough: 'Staten Island',
+  name: { $regex: 'pizza', $options: 'i' }
+})
+__________________________________________________________________________________
+7. Выведите названия 5 лучших по среднему значению отзывов ( $avg: "$grades.score")
+db["restaurants"].aggregate(
+[
+  {
+    $match: {
+      "grades.0": {
+        $exists: true
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      averageScore: {
+        $avg: "$grades.score"
+      }
+    }
+  },
+  {
+    $sort: {
+      averageScore: -1
+    }
+  },
+  {
+    $limit: 5
+  },
+  {
+    $group: {
+      _id: null,
+      top_restaurants: {
+        $push: "$name"
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0
+    }
+  }
+])
